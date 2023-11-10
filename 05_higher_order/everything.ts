@@ -1,5 +1,5 @@
 function every(array: number[], test: (n: number) => boolean): boolean {
-  for (let element of array) {
+  for (const element of array) {
     if (!test(element)) {
       return false;
     }

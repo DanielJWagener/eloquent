@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 class GroupIterator {
   groupInstance: Group;
   i: number;
@@ -10,7 +11,7 @@ class GroupIterator {
   next() {
     if (this.i === this.groupInstance.group.length) return { done: true };
 
-    let value = this.groupInstance.group[this.i];
+    const value = this.groupInstance.group[this.i];
 
     this.i++;
 
@@ -44,15 +45,15 @@ class Group {
   }
 
   static from(arr: any[]): Group {
-    let group = new Group();
-    for (let element of arr) {
+    const group = new Group();
+    for (const element of arr) {
       group.add(element);
     }
     return group;
   }
 }
 
-let group = Group.from([10, 20]);
+const group = Group.from([10, 20]);
 console.log(group.has(10));
 // → true
 console.log(group.has(30));
@@ -62,7 +63,7 @@ group.delete(10);
 console.log(group.has(10));
 // → false
 
-for (let value of Group.from(["a", "b", "c"])) {
+for (const value of Group.from(["a", "b", "c"])) {
   console.log(value);
 }
 // → a

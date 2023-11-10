@@ -54,6 +54,7 @@ var VillageState = class VillageState {
   }
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function runRobot(state, robot, memory) {
   for (let turn = 0; ; turn++) {
     if (state.parcels.length == 0) {
