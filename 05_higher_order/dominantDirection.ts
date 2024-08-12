@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const SCRIPTS = require("./scripts");
+import SCRIPTS from "./scripts";
 
 function dominantDirection(text: string): string {
   const directions = countBy(text, (char: string): string => {
