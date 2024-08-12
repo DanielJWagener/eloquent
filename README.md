@@ -11,5 +11,5 @@ ts-node <filename>
 For ES modules:
 
 ```
-npx tsx <filename> (for ES6 imports)
+npx tsx <filename>
 ```
