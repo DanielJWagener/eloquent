@@ -1,0 +1,43 @@
+<h1>Mountains</h1>
+
+<div id="mountains"></div>
+
+<script>
+  const MOUNTAINS = [
+    { name: "Kilimanjaro", height: 5895, place: "Tanzania" },
+    { name: "Everest", height: 8848, place: "Nepal" },
+    { name: "Mount Fuji", height: 3776, place: "Japan" },
+    { name: "Vaalserberg", height: 323, place: "Netherlands" },
+    { name: "Denali", height: 6168, place: "United States" },
+    { name: "Popocatepetl", height: 5465, place: "Mexico" },
+    { name: "Mont Blanc", height: 4808, place: "Italy/France" }
+  ];
+
+  function elt(type, ...children) {
+    let node = document.createElement(type);
+    for (let child of children) {
+      if (typeof child != "string") node.appendChild(child);
+      else node.appendChild(document.createTextNode(child));
+    }
+    return node;
+  }
+
+  const mountains = document.getElementById("mountains");
+  const table = document.createElement("table");
+  mountains.appendChild(table);
+
+  const mountainDataKeys = Object.keys(MOUNTAINS[0]);
+  const heightIndex = mountainDataKeys.indexOf("height");
+
+  table.appendChild(elt("tr", ...mountainDataKeys.map(x => elt("th", x))));
+  for (mountain of MOUNTAINS) {
+    table.appendChild(
+      elt("tr", ...Object.keys(mountain).map(x => elt("td", mountain[x].toString())))
+    );
+  }
+  for (row of Array.from(document.querySelectorAll("#mountains table tr"))) {
+    const cells = Array.from(row.querySelectorAll("td"));
+    if (cells.length === 0) continue;
+    cells[heightIndex].style.textAlign = "right";
+  }
+</script>
