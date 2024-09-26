@@ -1,0 +1,63 @@
+<style>
+  .trail {
+    /* className for the trail elements */
+    position: absolute;
+    height: 6px;
+    width: 6px;
+    border-radius: 3px;
+    background: teal;
+  }
+
+  body {
+    height: 300px;
+  }
+</style>
+<body></body>
+
+<script>
+  const trailNumber = 10;
+  const mousePositions = [];
+  let mouseX = 0;
+  let mouseY = 0;
+  const dots = [];
+  for (let i = 0; i < trailNumber; i++) {
+    const dot = document.createElement("div");
+    dot.style.opacity = 1 - i * (1 / trailNumber);
+    dot.style.top = "12px";
+    dot.style.left = "12px";
+    dot.className = "trail";
+    dot.setAttribute("data-dotnumber", i.toString());
+    dots.push(dot);
+    document.body.appendChild(dot);
+  }
+
+  function getDigit(str) {
+    return +str.split("px")[0];
+  }
+
+  function animateDots() {
+    for (let i = 0; i < dots.length; i++) {
+      const currentDot = dots[i];
+      const currentDotSpeed = 1 / ((i + 1) * 5);
+      const dotX = getDigit(currentDot.style.left);
+      const dotY = getDigit(currentDot.style.top);
+
+      const verticalOffset = dotY - mouseY;
+      const horizontalOffset = dotX - mouseX;
+
+      currentDot.style.top = `${dotY + verticalOffset * -1 * currentDotSpeed}px`;
+      currentDot.style.left = `${dotX + horizontalOffset * -1 * currentDotSpeed}px`;
+    }
+    requestAnimationFrame(animateDots);
+  }
+
+  requestAnimationFrame(animateDots);
+
+  document.addEventListener("mousemove", function (e) {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    while (mousePositions.length < trailNumber) {
+      mousePositions.push({ mouseX, mouseY });
+    }
+  });
+</script>

@@ -1,0 +1,30 @@
+<p>🎈</p>
+
+<script>
+  const balloon = document.body.querySelector("p");
+  document.addEventListener("keydown", flate);
+
+  function getDigit(str) {
+    return +str.match(/\d+/g);
+  }
+
+  function flate(e) {
+    const fontSize = balloon.style.fontSize;
+    if (e.key === "ArrowUp") {
+      if (!fontSize) {
+        balloon.style.fontSize = "17px";
+      } else if (getDigit(fontSize) >= 100) {
+        balloon.replaceChild(document.createTextNode("💥"), balloon.childNodes[0]);
+        document.removeEventListener("keydown", flate);
+      } else {
+        balloon.style.fontSize = `${getDigit(fontSize) + 1}px`;
+      }
+    } else if (e.key == "ArrowDown") {
+      if (!fontSize) {
+        balloon.style.fontSize = "15px";
+      } else {
+        balloon.style.fontSize = `${getDigit(fontSize) - 1}px`;
+      }
+    }
+  }
+</script>

@@ -1,0 +1,45 @@
+<tab-panel>
+  <div data-tabname="one">Tab one</div>
+  <div data-tabname="two">Tab two</div>
+  <div data-tabname="three">Tab three</div>
+</tab-panel>
+<script>
+  function asTabs(node) {
+    const children = Array.from(node.children);
+    const referenceNode = node.querySelector("[data-tabname]");
+    for (let childNode of children) {
+      const tabName = childNode.getAttribute("data-tabname");
+      const tabButton = document.createElement("button");
+      tabButton.className = "tab-button";
+      tabButton.textContent = tabName;
+
+      tabButton.onclick = function (e) {
+        selectTab(e.target);
+      };
+      node.insertBefore(tabButton, referenceNode);
+    }
+
+    function selectTab(targetButton) {
+      const tabList = node.querySelectorAll("[data-tabname]");
+      for (const tab of tabList) {
+        if (tab.getAttribute("data-tabname") !== targetButton.textContent) {
+          tab.style.display = "none";
+        } else {
+          tab.style.display = "block";
+        }
+      }
+
+      const tabButtonList = node.querySelectorAll(".tab-button");
+      for (const tabButton of tabButtonList) {
+        if (targetButton.isSameNode(tabButton)) {
+          tabButton.style.color = "red";
+        } else {
+          tabButton.style.color = "";
+        }
+      }
+    }
+
+    selectTab(node.querySelector(".tab-button"));
+  }
+  asTabs(document.querySelector("tab-panel"));
+</script>
