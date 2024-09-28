@@ -122,6 +122,49 @@ var Coin = class Coin {
 
 Coin.prototype.size = new Vec(0.6, 0.6);
 
+class Monster {
+  constructor(pos, speed) {
+    this.pos = pos;
+    this.speed = speed;
+  }
+
+  get type() {
+    return "monster";
+  }
+
+  static create(pos) {
+    console.log(pos);
+    return new Monster(pos.plus(new Vec(0, -1)), new Vec(3, 0));
+  }
+
+  update(time, state) {
+    let newPos = this.pos.plus(this.speed.times(time));
+    if (!state.level.touches(newPos, this.size, "wall")) {
+      return new Monster(newPos, this.speed);
+    } else {
+      return new Monster(this.pos, this.speed.times(-1));
+    }
+  }
+
+  collide(state) {
+    const player = state.player;
+    const playerBottom = player.size.y / 2 + player.pos.y;
+    const monsterTop = this.pos.y - 0.5;
+
+    const playerIsAboveMonster = playerBottom <= monsterTop;
+    if (playerIsAboveMonster) {
+      let filtered = state.actors.filter(a => a != this);
+      let status = state.status;
+      return new State(state.level, filtered, status);
+    } else {
+      console.log(state.actors);
+      return new State(state.level, state.actors, "lost");
+    }
+  }
+}
+
+Monster.prototype.size = new Vec(1.2, 2);
+
 var levelChars = {
   ".": "empty",
   "#": "wall",
@@ -130,7 +173,8 @@ var levelChars = {
   o: Coin,
   "=": Lava,
   "|": Lava,
-  v: Lava
+  v: Lava,
+  M: Monster
 };
 
 var simpleLevel = new Level(simpleLevelPlan);
@@ -342,8 +386,6 @@ function trackKeys(keys) {
   return down;
 }
 
-var arrowKeys = trackKeys(["ArrowLeft", "ArrowRight", "ArrowUp", " "]);
-
 function runAnimation(frameFunc) {
   let lastTime = null;
   function frame(time) {
@@ -377,6 +419,7 @@ function runLevel(level, Display) {
     }
 
     document.addEventListener("keydown", pauseGame);
+    var arrowKeys = trackKeys(["ArrowLeft", "ArrowRight", "ArrowUp", " "]);
     const frameFunction = time => {
       if (runState === "pausing") {
         runState = "paused";
