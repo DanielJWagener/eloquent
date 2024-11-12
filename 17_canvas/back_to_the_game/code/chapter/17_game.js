@@ -328,7 +328,7 @@ CanvasDisplay.prototype.drawActors = function (actors) {
     let width = actor.size.x * scale;
     let height = actor.size.y * scale;
     let x = (actor.pos.x - this.viewport.left) * scale;
-    let y = (actor.pos.y = this.viewport.top) * scale;
+    let y = (actor.pos.y - this.viewport.top) * scale;
     if (actor.type == "player") {
       this.drawPlayer(actor, x, y, width, height);
     } else {
