@@ -1,0 +1,24 @@
+<canvas width="600" height="200"></canvas>
+<script>
+  let cx = document.querySelector("canvas").getContext("2d");
+
+  function drawTrapezoid(bottomWidth, topWidth, height, position) {
+    const topY = (200 - height) / 2;
+    const bottomY = topY + height;
+
+    const paddingX = (120 - bottomWidth) / 2;
+    const bottomLeftX = position * 120 + paddingX;
+    const topLeftX = bottomLeftX + (bottomWidth - topWidth) / 2;
+    const topRightX = topLeftX + topWidth;
+    const bottomRightX = topRightX + (bottomWidth - topWidth) / 2;
+
+    cx.moveTo(bottomLeftX, bottomY);
+    cx.lineTo(topLeftX, topY);
+    cx.lineTo(topRightX, topY);
+    cx.lineTo(bottomRightX, bottomY);
+    cx.lineTo(bottomLeftX, bottomY);
+    cx.stroke();
+  }
+
+  drawTrapezoid(100, 70, 50, 0);
+</script>
