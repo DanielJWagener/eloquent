@@ -2,7 +2,8 @@
 <script>
   let cx = document.querySelector("canvas").getContext("2d");
 
-  function drawTrapezoid(bottomWidth, topWidth, height, position) {
+  function drawTrapezoid(position, params) {
+    const { bottomWidth, height, topWidth } = params;
     const topY = (200 - height) / 2;
     const bottomY = topY + height;
 
@@ -12,6 +13,7 @@
     const topRightX = topLeftX + topWidth;
     const bottomRightX = topRightX + (bottomWidth - topWidth) / 2;
 
+    cx.beginPath();
     cx.moveTo(bottomLeftX, bottomY);
     cx.lineTo(topLeftX, topY);
     cx.lineTo(topRightX, topY);
@@ -20,5 +22,137 @@
     cx.stroke();
   }
 
-  drawTrapezoid(100, 70, 50, 0);
+  function drawRedDiamond(position, params) {
+    const { width } = params;
+    const paddingX = (120 - width) / 2;
+    const paddingY = (200 - width) / 2;
+
+    const left = paddingX + position * 120;
+    const right = left + width;
+    const bottom = paddingY + width;
+
+    cx.moveTo(0, 0);
+    cx.save();
+    cx.translate(position * 120 + 60, 100);
+    cx.rotate(-0.25 * Math.PI);
+    cx.translate(position * -120 - 60, -100);
+    cx.beginPath();
+    cx.moveTo(left, paddingY);
+
+    cx.lineTo(right, paddingY);
+    cx.lineTo(right, bottom);
+    cx.lineTo(left, bottom);
+    cx.lineTo(left, top);
+
+    cx.fillStyle = "red";
+    cx.fill();
+
+    cx.restore();
+  }
+
+  function drawZigZag(position, params) {
+    const { height, width } = params;
+
+    const paddingX = (120 - width) / 2;
+    let leftBoundary = 120 * position + paddingX;
+    const rightBoundary = leftBoundary + width;
+
+    let yPosition = (200 - height) / 2;
+
+    cx.moveTo(leftBoundary, yPosition);
+    cx.beginPath();
+
+    const bottomLimit = height + yPosition;
+
+    const descent = 5;
+
+    while (yPosition + descent <= bottomLimit) {
+      cx.lineTo(rightBoundary, (yPosition += descent));
+      if (yPosition + descent >= bottomLimit) break;
+      cx.lineTo(leftBoundary, (yPosition += descent));
+    }
+
+    cx.stroke();
+  }
+
+  function drawSpiral(position) {
+    const originX = position * 120 + 60;
+    const originY = 100;
+
+    cx.beginPath();
+    cx.moveTo(originX, originY);
+    cx.save();
+    cx.translate(originX, originY);
+
+    for (let i = 0; i < 100; i++) {
+      const angle = i / 4;
+      const radius = i / 2;
+      const y = Math.sin(angle) * radius;
+      const x = Math.cos(angle) * radius;
+      cx.lineTo(x, y);
+    }
+    cx.stroke();
+    cx.restore();
+  }
+
+  function drawStar(position, params) {
+    const { points, radius } = params;
+    const xOffset = position * 120;
+    const originX = xOffset + 60;
+    const originY = 100;
+
+    cx.beginPath();
+    cx.moveTo(originX + radius, originY);
+
+    for (let i = 1; i <= 8; i++) {
+      console.log(i);
+      const angle = (i * Math.PI) / 4;
+      cx.quadraticCurveTo(
+        originX,
+        originY,
+        Math.cos(angle) * radius + originX,
+        Math.sin(angle) * radius + originY
+      );
+    }
+
+    cx.fillStyle = "gold";
+    cx.fill();
+  }
+
+  const shapes = [
+    {
+      drawFunc: drawTrapezoid,
+      params: { bottomWidth: 100, topWidth: 70, height: 50 }
+    },
+    {
+      drawFunc: drawRedDiamond,
+      params: { width: 60 }
+    },
+    {
+      drawFunc: drawZigZag,
+      params: {
+        height: 120,
+        width: 100
+      }
+    },
+    {
+      drawFunc: drawSpiral
+    },
+    {
+      drawFunc: drawStar,
+      params: {
+        points: 8,
+        radius: 50
+      }
+    }
+  ];
+
+  function drawAtPosition(drawFunc, position, params) {
+    drawFunc(position, params);
+  }
+
+  for (let i in shapes) {
+    const { drawFunc, params } = shapes[i];
+    drawAtPosition(drawFunc, i, params);
+  }
 </script>
