@@ -115,7 +115,7 @@
 
   function updateAnimation(step) {
     cx.clearRect(0, 0, canvas.width, canvas.height);
-    const box = drawBox(boxWidth);
+    const box = new Box(boxWidth);
     box.draw();
 
     ball = drawBall(box, ball, step);
