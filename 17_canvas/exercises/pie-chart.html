@@ -1,0 +1,64 @@
+<canvas width="600" height="300"></canvas>
+<script>
+  const results = [
+    { name: "Satisfied", count: 1043, color: "lightblue" },
+    { name: "Neutral", count: 563, color: "lightgreen" },
+    { name: "Unsatisfied", count: 510, color: "pink" }
+  ];
+  let cx = document.querySelector("canvas").getContext("2d");
+  let total = results.reduce((sum, { count }) => sum + count, 0);
+  let currentAngle = -0.5 * Math.PI;
+  let centerX = 300,
+    centerY = 150,
+    radius = 100;
+
+  function getAlignment(radian) {
+    const angle = ((radian + 2 * Math.PI) % (2 * Math.PI)) / Math.PI;
+    if (angle > 0.25 && angle <= 0.75) {
+      return "bottom";
+    } else if (angle > 0.75 && angle <= 1.25) {
+      return "left";
+    } else if (angle > 1.25 && angle <= 1.75) {
+      return "top";
+    }
+    return "right";
+  }
+
+  function getAlignmentMultiplier(alignment) {
+    switch (alignment) {
+      case "right":
+      case "bottom":
+        return 1.1;
+      case "top":
+        return 1.3;
+      case "left":
+        return 1.5;
+      default:
+        return 1.1;
+    }
+  }
+
+  cx.font = "16px Georgia";
+
+  for (let result of results) {
+    let sliceAngle = (result.count / total) * 2 * Math.PI;
+    cx.beginPath();
+    cx.arc(centerX, centerY, radius, currentAngle, currentAngle + sliceAngle);
+
+    const medianAngle = currentAngle + ((sliceAngle + 2 * Math.PI) % (2 * Math.PI)) / 2;
+
+    const alignment = getAlignment(medianAngle);
+    const alignmentMultiplier = getAlignmentMultiplier(alignment);
+
+    currentAngle += sliceAngle;
+    cx.lineTo(centerX, centerY);
+    cx.fillStyle = result.color;
+    cx.fill();
+
+    const textX = Math.cos(medianAngle) * radius * alignmentMultiplier + centerX;
+    const textY = Math.sin(medianAngle) * radius * alignmentMultiplier + centerY;
+
+    cx.fillStyle = "black";
+    cx.fillText(result.name, textX, textY);
+  }
+</script>
