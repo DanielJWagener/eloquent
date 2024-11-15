@@ -84,14 +84,6 @@
     }
   };
 
-  const boxWidth = 300;
-
-  function drawBox(width) {
-    const box = new Box(width);
-
-    return box;
-  }
-
   let ball = new Ball(new Vec(100, 100), new Vec(200, 100));
 
   function drawBall(box, ball, time) {
@@ -115,7 +107,7 @@
 
   function updateAnimation(step) {
     cx.clearRect(0, 0, canvas.width, canvas.height);
-    const box = new Box(boxWidth);
+    const box = new Box(300);
     box.draw();
 
     ball = drawBall(box, ball, step);
