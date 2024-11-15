@@ -1,0 +1,118 @@
+<canvas width="400" height="400"></canvas>
+<script>
+  let canvas = document.querySelector("canvas");
+  let cx = canvas.getContext("2d");
+
+  let lastTime = null;
+  function frame(time) {
+    if (lastTime != null) {
+      updateAnimation(Math.min(100, time - lastTime) / 1000);
+    }
+    lastTime = time;
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  var Vec = class Vec {
+    constructor(x, y) {
+      this.x = x;
+      this.y = y;
+    }
+    plus(other) {
+      return new Vec(this.x + other.x, this.y + other.y);
+    }
+    times(factor) {
+      return new Vec(this.x * factor, this.y * factor);
+    }
+    addGravity() {
+      return new Vec(this.x, this.y + 10);
+    }
+    reverseX() {
+      return new Vec(this.x * -1, this.y);
+    }
+    reverseY() {
+      return new Vec(this.x, this.y * -1);
+    }
+  };
+
+  var Box = class Box {
+    constructor(boxWidth) {
+      this.width = 300;
+      this.marginX = (canvas.width - boxWidth) / 2;
+      this.marginY = (canvas.height - boxWidth) / 2;
+      this.boundingLeft = this.marginX;
+      this.boundingRight = this.marginX + boxWidth;
+      this.boundingTop = this.marginY;
+      this.boundingBottom = this.marginY + boxWidth;
+    }
+  };
+
+  var Ball = class Ball {
+    constructor(pos, speed) {
+      this.pos = pos;
+      this.speed = speed;
+      this.radius = 20;
+    }
+
+    draw() {
+      cx.beginPath();
+      cx.arc(this.pos.x, this.pos.y, this.radius, 0, 7);
+      cx.fillStyle = "blue";
+      cx.fill();
+    }
+
+    isCollidingWithLeftWall(box) {
+      return ball.pos.x <= box.boundingLeft + ball.radius && ball.speed.x < 0;
+    }
+
+    isCollidingWithRightWall(box) {
+      return ball.pos.x >= box.boundingRight - ball.radius && ball.speed.x > 0;
+    }
+
+    isCollidingWithTopWall(box) {
+      return ball.pos.y <= box.boundingTop + ball.radius && ball.speed.y < 0;
+    }
+
+    isCollidingWithBottomWall(box) {
+      return ball.pos.y >= box.boundingBottom - ball.radius && ball.speed.y > 0;
+    }
+  };
+
+  const boxWidth = 300;
+
+  function drawBox(width) {
+    const box = new Box(width);
+    cx.strokeRect(box.marginX, box.marginY, width, width);
+    return box;
+  }
+
+  let ball = new Ball(new Vec(100, 100), new Vec(200, 100));
+
+  function drawBall(box, ball, time) {
+    if (ball.pos.y <= 350 - ball.radius - 1) {
+      ball.speed = ball.speed.addGravity();
+    }
+    ball.pos = ball.pos.plus(ball.speed.times(time));
+
+    if (isCollidingWithBottomWall(box) || isCollidingWithTopWall(box)) {
+      ball.speed = ball.speed.reverseY();
+    }
+
+    if (ball.isCollidingWithLeftWall(box) || ball.isCollidingWithRightWall(box)) {
+      ball.speed = ball.speed.reverseX();
+    }
+
+    ball.draw();
+
+    return ball;
+  }
+
+  function updateAnimation(step) {
+    cx.clearRect(0, 0, canvas.width, canvas.height);
+    cx.strokeStyle = "black";
+    cx.lineWidth = 4;
+    const box = drawBox(boxWidth);
+
+    ball = drawBall(box, ball, step);
+  }
+</script>
