@@ -45,6 +45,12 @@
       this.boundingTop = this.marginY;
       this.boundingBottom = this.marginY + boxWidth;
     }
+
+    draw() {
+      cx.strokeStyle = "black";
+      cx.lineWidth = 4;
+      cx.strokeRect(this.marginX, this.marginY, this.width, this.width);
+    }
   };
 
   var Ball = class Ball {
@@ -82,7 +88,7 @@
 
   function drawBox(width) {
     const box = new Box(width);
-    cx.strokeRect(box.marginX, box.marginY, width, width);
+
     return box;
   }
 
@@ -94,7 +100,7 @@
     }
     ball.pos = ball.pos.plus(ball.speed.times(time));
 
-    if (isCollidingWithBottomWall(box) || isCollidingWithTopWall(box)) {
+    if (ball.isCollidingWithBottomWall(box) || ball.isCollidingWithTopWall(box)) {
       ball.speed = ball.speed.reverseY();
     }
 
@@ -109,9 +115,8 @@
 
   function updateAnimation(step) {
     cx.clearRect(0, 0, canvas.width, canvas.height);
-    cx.strokeStyle = "black";
-    cx.lineWidth = 4;
     const box = drawBox(boxWidth);
+    box.draw();
 
     ball = drawBall(box, ball, step);
   }
